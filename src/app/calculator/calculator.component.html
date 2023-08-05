@@ -1,0 +1,24 @@
+<div class="calculator">
+    <div class="displayAera">
+        <div class="display">{{ displayValue }}</div>
+        <button class="delButton" (click)="onButtonClick('DEL')">DEL</button>
+    </div>
+    <div class="buttons">
+        <button (click)="onButtonClick('+')">+</button>
+        <button (click)="onButtonClick('-')">-</button> 
+        <button (click)="onButtonClick('*')">x</button>
+        <button (click)="onButtonClick('/')">÷</button>
+        <button (click)="onButtonClick(7)">7</button>
+        <button (click)="onButtonClick(8)">8</button>
+        <button (click)="onButtonClick(9)">9</button>
+        <button (click)="clearDisplay()">C</button>
+        <button (click)="onButtonClick(4)">4</button>
+        <button (click)="onButtonClick(5)">5</button>
+        <button (click)="onButtonClick(6)">6</button>
+        <button (click)="onButtonClick(0)">0</button> 
+        <button (click)="onButtonClick(1)">1</button>
+        <button (click)="onButtonClick(2)">2</button>
+        <button (click)="onButtonClick(3)">3</button>
+        <button (click)="calculate()">=</button>
+    </div>
+</div>
