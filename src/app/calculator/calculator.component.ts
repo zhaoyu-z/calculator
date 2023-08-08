@@ -38,9 +38,11 @@ export class CalculatorComponent {
 
 	calculate() {
 		try {
-			this.displayValue = eval(this.currentExpression).toString();
+			this.displayValue = eval(this.currentExpression).toFixed(2).toString();
+			this.currentExpression = this.displayValue;
 		} catch (error) {
 			this.displayValue = 'Error';
+			this.currentExpression = '0';
 		}
 	}
 
