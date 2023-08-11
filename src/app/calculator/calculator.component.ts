@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Renderer2, ViewChild, ElementRef } from '@angular/core';
 
 @Component({
 	selector: 'app-calculator',
@@ -17,6 +17,9 @@ export class CalculatorComponent {
 			this.deleteLastCharacter();
 		} else {
 			if (this.displayValue === '0') {
+				this.displayValue = value.toString();
+			} else if (this.displayValue === "Error") {
+				this.clearDisplay();
 				this.displayValue = value.toString();
 			} else {
 				this.displayValue += value;
@@ -38,7 +41,30 @@ export class CalculatorComponent {
 
 	calculate() {
 		try {
+			let newRecord = this.displayValue + " = ";
 			this.displayValue = eval(this.currentExpression).toFixed(2).toString();
+			newRecord += this.displayValue;
+
+			var newElement = document.createElement("div");
+			newElement.innerHTML = newRecord;
+			newElement.style.display = "flex";
+			newElement.style.justifyContent = "space-between";
+			newElement.style.fontSize = "20px";
+			
+			var historyContainer = document.getElementById("historyContainer");
+
+			var deleteButton = document.createElement("button");
+			deleteButton.innerHTML = "X";
+			deleteButton.style.color = "green";
+			deleteButton.addEventListener("click", () => {
+				historyContainer?.removeChild(newElement);
+			});
+			
+			if (historyContainer) {
+				newElement.appendChild(deleteButton);
+				historyContainer.appendChild(newElement);
+			}
+
 			this.currentExpression = this.displayValue;
 		} catch (error) {
 			this.displayValue = 'Error';
