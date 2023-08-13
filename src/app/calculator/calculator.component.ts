@@ -1,4 +1,4 @@
-import { Component, Renderer2, ViewChild, ElementRef } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
 	selector: 'app-calculator',
@@ -10,6 +10,11 @@ export class CalculatorComponent {
 	currentExpression: string = '';
 	waitingForNextOperand: boolean = false;
 	pressedEqual: boolean = true;
+	recordId: number = 0;
+
+	async sleep(ms: number) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
 
 	onButtonClick(value: string|number) {
 		if (value === 'DEL') {
@@ -43,7 +48,7 @@ export class CalculatorComponent {
 		}
 	}
 
-	calculate() {
+	async calculate() {
 		if (this.displayValue === "Error" || this.displayValue === "0") {
 			return;
 		}
@@ -55,19 +60,26 @@ export class CalculatorComponent {
 			return;
 		}
 
+		let newRecordId = this.recordId.toString();
+		this.recordId += 1;
 
 		try {
-			let newRecord = this.displayValue + " = ";
-			this.displayValue = eval(this.currentExpression).toFixed(2).toString();
-			newRecord += this.displayValue;
-
-			this.addToHistory(newRecord);
-
-			this.currentExpression = this.displayValue;
 			this.pressedEqual = true;
+
+			let newRecord = this.displayValue + " = ";
+			this.addToHistory(newRecord, newRecordId);
+
+            let expression = this.currentExpression;
+            this.displayValue = '0';
+            this.currentExpression = '';
+
+			await this.sleep(3000);
+
+			let result = eval(expression).toFixed(2).toString();
+
+			this.updateHistoryRecord(newRecordId, result);
 		} catch (error) {
-			this.displayValue = 'Error';
-			this.currentExpression = '';
+			this.updateHistoryRecord(newRecordId, "Error");
 		}
 	}
 
@@ -76,8 +88,9 @@ export class CalculatorComponent {
 		this.currentExpression = '';
 	}
 
-	addToHistory(newRecord: string) {
+	addToHistory(newRecord: string, newRecordId: string) {
 		var newElement = document.createElement("div");
+		newElement.id = newRecordId;
 		newElement.innerHTML = newRecord;
 		newElement.style.display = "flex";
 		newElement.style.justifyContent = "space-between";
@@ -95,6 +108,13 @@ export class CalculatorComponent {
 		if (historyContainer) {
 			newElement.appendChild(deleteButton);
 			historyContainer.appendChild(newElement);
+		}
+	}
+
+	async updateHistoryRecord(newRecordId: string, result: string) {
+		var record = document.getElementById(newRecordId);
+		if (record) {
+			record.childNodes[0].nodeValue += result;
 		}
 	}
 }
