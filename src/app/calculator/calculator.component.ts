@@ -20,19 +20,13 @@ export class CalculatorComponent {
 		if (value === 'DEL') {
 			this.deleteLastCharacter();
 		} else {
-			if (this.displayValue === "Error") {
-				this.clearDisplay();
+			if (this.pressedEqual) {
 				this.displayValue = value.toString();
 				this.currentExpression = this.displayValue;
+				this.pressedEqual = false;
 			} else {
-				if (this.pressedEqual) {
-					this.displayValue = value.toString();
-					this.currentExpression = this.displayValue;
-					this.pressedEqual = false;
-				} else {
-					this.displayValue += value;
-					this.currentExpression += value;
-				}
+				this.displayValue += value;
+				this.currentExpression += value;
 			}
 		}
 	}
@@ -49,7 +43,7 @@ export class CalculatorComponent {
 	}
 
 	async calculate() {
-		if (this.displayValue === "Error" || this.displayValue === "0") {
+		if (this.displayValue === "0") {
 			return;
 		}
 
